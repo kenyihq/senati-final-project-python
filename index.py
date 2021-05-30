@@ -32,6 +32,10 @@ class User:
         self.addres = Entry(self.wind)
         self.addres.grid(row = 4, column = 2, pady = 10)
 
+        Label(self.wind, text = "Ciudad :").grid(row = 4, column = 3)
+        self.city = Entry(self.wind)
+        self.city.grid(row = 4, column = 4, pady = 10)
+
         Label(self.wind, text = "Teléfono :").grid(row = 5, column = 1)
         self.phone = Entry(self.wind)
         self.phone.grid(row = 5, column = 2, pady = 10)
@@ -44,17 +48,35 @@ class User:
         # Cramos mensaje de accion
         self.message = Label(text="", fg = "red")
         self.message.grid(row = 6, column = 1, columnspan = 2, sticky = W + E)
-
+    
+    # Creamos funcion para guardar los datos 
     def save_dates(self):
         self.message["text"] = "Guardado correctamente"
+        self.println()
+        self.print_txt()
         self.dni.delete(0, END)
         self.last_name.delete(0, END)
         self.name.delete(0, END)
         self.addres.delete(0, END)
+        self.city.delete(0, END)
         self.phone.delete(0, END)
-        
-        
 
+    # Creamos función para imprimir en consola    
+    def println(self):
+        
+        print(f"DNI : {self.dni.get()}")
+        print(f"Apellidos : {self.last_name.get()}")
+        print(f"Nombres : {self.name.get()}")
+        print(f"Dirección : {self.addres.get()}")
+        print(f"Ciudad : {self.city.get()}")
+        print(f"Teléfono : {self.phone.get()}")
+
+    # Creamos función para imprimir los datos en un TXT
+    def print_txt(self):
+        print_display = f"NUEVO CLIENTE\nDNI : {self.dni.get()}\nApellidos : {self.last_name.get()}\nNombres : {self.name.get()}\nDirección : {self.addres.get()}\nCiudad : {self.city.get()}\nTeléfono : {self.phone.get()}\n"
+        file = open("nuevo-cliente.txt", "w")
+        file.write(print_display)
+        file.close()
         
 # Aqui empieza a ejecutarse el código
 if __name__ == '__main__':
