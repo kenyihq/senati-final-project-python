@@ -1,7 +1,7 @@
 NUEVO CLIENTE
-DNI : 70762966
-Apellidos : Hancco Quispe
-Nombres : Kenyi Julberht
-Dirección : Jr. Miraflores A1-7, Santa Celedonia
-Ciudad : Juliaca
-Teléfono : 910594824
+DNI : 789794646
+Apellidos : El Cartero
+Nombres : Jaimito
+Dirección : La Vecindad
+Ciudad : Mexico
+Teléfono : 78945646
