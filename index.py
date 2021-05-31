@@ -1,9 +1,15 @@
 # Importamos la libreria Tkinter para iniciar la interfaz gráfica
 from tkinter import *
 
+# Usaremos la base de datos SQLite3, para guardar los datos de los clientes
+# Importamos
+import sqlite3
+
 # Utilizaremos POO
 
-class User:
+class Client:
+    # Guardamos la ubicacion relativa de la base de datos en una variable
+    db_name = "database.db"
 
     # Empezamos a construir
     def __init__(self, window):
@@ -11,49 +17,82 @@ class User:
         self.wind.title("EL TORNILLO FELIZ")
 
         # Creamos el titulo
-        title = Label(self.wind, text = "Ferretería El Tornillo Feliz", font = "Arial")
-        title.grid(row = 0, column = 0, columnspan = 5, pady = 20)
+        self.frame = LabelFrame(self.wind, text = "Ferretería El Tornillo Feliz", font = "Arial")
+        self.frame.pack()
 
         # Ingresar datos
-        Label(self.wind, text = "DNI :").grid(row = 2, column = 1)
-        self.dni = Entry(self.wind)
-        self.dni.grid(row = 2, column = 2, pady = 10)
+        Label(self.frame, text = "DNI :").grid(row = 1, column = 0)
+        self.dni = Entry(self.frame)
+        self.dni.grid(row = 1, column = 1, pady = 10)
         self.dni.focus()
 
-        Label(self.wind, text = "Apellidos :").grid(row = 3, column = 1)
-        self.last_name = Entry(self.wind)
-        self.last_name.grid(row = 3, column = 2, pady = 10)
+        # Creamos boton de buscar
+        self.search = Button(self.frame, text = "Buscar", command = self.search_client)
+        self.search.grid(row = 1, column = 2)
+        
+        Label(self.frame, text = "Apellidos :").grid(row = 2, column = 0)
+        self.last_name = Entry(self.frame)
+        self.last_name.grid(row = 2, column = 1, pady = 10)
 
-        Label(self.wind, text = "Nombres :").grid(row = 3, column = 3)
-        self.name = Entry(self.wind)
-        self.name.grid(row = 3, column = 4, pady = 10)
+        Label(self.frame, text = "Nombres :").grid(row = 2, column = 2)
+        self.name = Entry(self.frame)
+        self.name.grid(row = 2, column = 3, pady = 10)
 
-        Label(self.wind, text = "Dirección :").grid(row = 4, column = 1)
-        self.addres = Entry(self.wind)
-        self.addres.grid(row = 4, column = 2, pady = 10)
+        Label(self.frame, text = "Dirección :").grid(row = 3, column = 0)
+        self.addres = Entry(self.frame)
+        self.addres.grid(row = 3, column = 1, pady = 10)
 
-        Label(self.wind, text = "Ciudad :").grid(row = 4, column = 3)
-        self.city = Entry(self.wind)
-        self.city.grid(row = 4, column = 4, pady = 10)
+        Label(self.frame, text = "Ciudad : ").grid(row = 3, column = 2)
+        self.city = Entry(self.frame)
+        self.city.grid(row = 3, column = 3, pady = 10)
 
-        Label(self.wind, text = "Teléfono :").grid(row = 5, column = 1)
-        self.phone = Entry(self.wind)
-        self.phone.grid(row = 5, column = 2, pady = 10)
+        Label(self.frame, text = "Teléfono :").grid(row = 4, column = 0)
+        self.phone = Entry(self.frame)
+        self.phone.grid(row = 4, column = 1, pady = 10)
 
         # Creamos boton de agregar datos
+        self.add_dates = Button(self.frame, text = "GUARDAR DATOS", command = self.save_dates)
+        self.add_dates.grid(row = 6, column = 1, pady = 20)
 
-        self.add_dates = Button(self.wind, text = "GUARDAR DATOS", command = self.save_dates)
-        self.add_dates.grid(row = 7, column = 1, pady = 20, sticky = W + E)
+        # Creamos boton de imprimir cliente
+        self.print_dates = Button(self.frame, text = "IMPRIMIR", command = self.println)
+        self.print_dates.grid(row = 6, column = 2, pady = 20)
 
         # Cramos mensaje de accion
-        self.message = Label(text="", fg = "red")
-        self.message.grid(row = 6, column = 1, columnspan = 2, sticky = W + E)
-    
+        self.message = Label(self.frame, text="", fg = "red")
+        self.message.grid(row = 5, column = 1, columnspan = 2, sticky = W + E)
+
+    # Creamos funcion para hacer la conexion con la base de datos
+    def run_query(self, query, parameters = ()):
+        with sqlite3.connect(self.db_name) as conn:
+            cursor = conn.cursor()
+            result = cursor.execute(query, parameters)
+            conn.commit()
+        return result
+
+    # Creamos funcion para validar si existen datos en la tabla
+    def validated(self):
+        return len(self.dni.get()) != 0 and len(self.dni.get()) != 0 and len(self.dni.get()) != 0 and len(self.dni.get()) != 0 and len(self.dni.get()) != 0 and len(self.dni.get()) != 0
+
+    # Creamos funcion para agregar datos a la base de datos Client
+    def add_client(self):
+        if self.validated():
+            query = "INSERT INTO Client VALUES(NULL, ?, ?, ?, ?, ?, ?)"
+            parameters = (self.dni.get(), self.last_name.get(), self.name.get(), self.addres.get(), self.city.get(), self.phone.get())
+            self.run_query(query, parameters)
+            self.print_txt()
+            self.message["text"] = "Guardado correctamente"
+
+        else:
+            self.message["text"] = "¡SE REQUIEREN TODOS LOS CAMPOS!"
+            
+    # Creamos funcion de buscar cliente
+    def search_client(self):
+        Label(self.frame, text = f"{self.dni.get()} no existe", fg = "red").grid(row = 1, column = 3)
+
     # Creamos funcion para guardar los datos 
     def save_dates(self):
-        self.message["text"] = "Guardado correctamente"
-        self.println()
-        self.print_txt()
+        self.add_client()
         self.dni.delete(0, END)
         self.last_name.delete(0, END)
         self.name.delete(0, END)
@@ -81,6 +120,6 @@ class User:
 # Aqui empieza a ejecutarse el código
 if __name__ == '__main__':
     window = Tk()
-    aplication = User(window)
+    aplication = Client(window)
     window.geometry("500x600")
     window.mainloop()
