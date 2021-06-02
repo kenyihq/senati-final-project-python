@@ -1,4 +1,5 @@
 # Importamos la libreria Tkinter para iniciar la interfaz gráfica
+from tkinter import ttk
 from tkinter import *
 
 # Usaremos la base de datos SQLite3, para guardar los datos de los clientes
@@ -18,7 +19,7 @@ class Client:
 
         # Creamos el titulo
         self.frame = LabelFrame(self.wind, text = "Ferretería El Tornillo Feliz", font = "Arial")
-        self.frame.pack()
+        self.frame.grid(row = 0, column = 0, columnspan = 2)
 
         # Ingresar datos
         Label(self.frame, text = "DNI :").grid(row = 1, column = 0)
@@ -61,6 +62,12 @@ class Client:
         # Cramos mensaje de accion
         self.message = Label(self.frame, text="", fg = "red")
         self.message.grid(row = 5, column = 1, columnspan = 2, sticky = W + E)
+
+        # Creamos la tabla de los productos de la tienda
+        self.tab = ttk.Treeview(height = 10, columns = 2)
+        self.tab.grid(row = 6, column = 0, columnspan = 2)
+        self.tab.heading("#0", text = "Producto", anchor = CENTER)
+        self.tab.heading("#1", text = "Precio", anchor = CENTER)
 
     # Creamos funcion para hacer la conexion con la base de datos
     def run_query(self, query, parameters = ()):
@@ -121,5 +128,5 @@ class Client:
 if __name__ == '__main__':
     window = Tk()
     aplication = Client(window)
-    window.geometry("500x600")
+    window.geometry("400x500")
     window.mainloop()

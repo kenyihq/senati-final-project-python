@@ -1,7 +1,7 @@
 NUEVO CLIENTE
-DNI : 789794646
-Apellidos : El Cartero
-Nombres : Jaimito
+DNI : 7845612
+Apellidos : Meza
+Nombres : Florinda
 Dirección : La Vecindad
 Ciudad : Mexico
-Teléfono : 78945646
+Teléfono : 789456132
