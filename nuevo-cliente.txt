@@ -1,7 +1,7 @@
 NUEVO CLIENTE
-DNI : 7845612
+DNI : 24682468
 Apellidos : Meza
-Nombres : Florinda
-Dirección : La Vecindad
+Nombres : Popis
+Dirección : Fuerad de la Vecindad
 Ciudad : Mexico
-Teléfono : 789456132
+Teléfono : 54864121

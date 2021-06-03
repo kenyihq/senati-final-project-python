@@ -33,6 +33,8 @@ class Client:
         # Creamos boton de buscar
         self.search = Button(self.frame, text = "Buscar", command = self.search_client)
         self.search.grid(row = 1, column = 2)
+        self.message_search = Label(self.frame, text = "", fg = "red")
+        self.message_search.grid(row = 1, column = 3)
         
         Label(self.frame, text = "Apellidos :").grid(row = 2, column = 0)
         self.last_name = Entry(self.frame)
@@ -220,20 +222,51 @@ class Client:
         self.get_products()
 
 
-            
+    def validate_client(self):
+        return len(self.dni.get()) != 0
+    
     # Creamos funcion de buscar cliente
     def search_client(self):
-        Label(self.frame, text = f"{self.dni.get()} no existe", fg = "red").grid(row = 1, column = 3)
+        if self.validate_client():
+            query = "SELECT * FROM Client WHERE DNI = ?"
+            parameters = (self.dni.get())
+            self.run_query(query, (parameters, ))
+            dates_consoles = self.run_query(query, (parameters, ))
+            for self.i in dates_consoles:
+                print(self.i)
+                self.message_search["text"] = f"{self.dni.get()} encontrado"
+                self.delete_dates()
+                self.full_dates()
+                return
+
+        else:
+            self.message_search["text"] = "Ingrese DNI"
+            return
+
+        self.delete_dates()
+        self.message_search["text"] = f"{self.dni.get()} no existe"
+
+    # Funcion para rellenar los campos si el cliente esta en la base de datos
+    def full_dates(self):
+        self.last_name.insert(0, f"{self.i[2]}")
+        self.name.insert(0, f"{self.i[3]}")
+        self.addres.insert(0, f"{self.i[4]}")
+        self.city.insert(0, f"{self.i[5]}")
+        self.phone.insert(0, f"{self.i[6]}")
+
+    # Creamos función para limpiar los campos al realizar una busqueda
+    def delete_dates(self):
+        self.last_name.delete(0, END)
+        self.name.delete(0, END)
+        self.addres.delete(0, END)
+        self.city.delete(0, END)
+        self.phone.delete(0, END)        
 
     # Creamos funcion para guardar los datos 
     def save_dates(self):
         self.add_client()
         self.dni.delete(0, END)
-        self.last_name.delete(0, END)
-        self.name.delete(0, END)
-        self.addres.delete(0, END)
-        self.city.delete(0, END)
-        self.phone.delete(0, END)
+        self.delete_dates()        
 
     # Creamos función para imprimir en consola    
     def println(self):
