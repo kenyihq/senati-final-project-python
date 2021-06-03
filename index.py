@@ -16,6 +16,9 @@ class Client:
     def __init__(self, window):
         self.wind = window
         self.wind.title("EL TORNILLO FELIZ")
+        
+        # Ubicación de mi icono
+        # self.wind.iconbitmap("D:\\Programacion\\Python\\TKinter\\SenatiProject\\Trabajo-Final-Python\\tornillofelizlogo.ico")
 
         # Creamos el titulo
         self.frame = LabelFrame(self.wind, text = "Ferretería El Tornillo Feliz", font = "Arial")
@@ -69,6 +72,39 @@ class Client:
         self.tab.heading("#0", text = "Producto", anchor = CENTER)
         self.tab.heading("#1", text = "Precio", anchor = CENTER)
 
+        ttk.Button(text = "ELIMINAR", command = self.delete_products).grid(row = 7, column = 0, sticky = W + E)
+        ttk.Button(text = "EDITAR", command = self.edit_product).grid(row = 7, column = 1, sticky = W + E)
+
+        ttk.Button(text = "AGREGAR PRODUCTOS", command = self.add_products).grid(row = 8, column = 0, columnspan = 2, sticky = W +E)
+
+        self.get_products()
+    
+    # Creamos funcion para agregar nuevos productos
+    def add_products(self):
+        self.wind_add_products = Toplevel()
+        self.wind_add_products.title("AGREGAR PRODUCTO")
+        #self.wind_add_products.geometry("400x550")
+
+        frame = LabelFrame(self.wind_add_products, text="REGISTRAR NUEVO PRODUCTO")
+        frame.grid(row = 0, column = 0, columnspan = 2, pady = 20)
+
+        # Ingresar nombre
+        Label(frame, text = "Nombre :").grid(row = 1, column = 0)
+        self.name_prod = Entry(frame)
+        self.name_prod.focus()
+        self.name_prod.grid(row = 1, column = 1)
+
+        # Ingresar precio
+        Label(frame, text = "Precio :").grid(row = 2, column = 0)
+        self.price_prod = Entry(frame)
+        self.price_prod.grid(row = 2, column = 1)
+
+        # Boton de agregar productos
+        ttk.Button(frame, text = "Guardar Producto", command = self.add_new_prod).grid(row = 3, columnspan = 2, sticky = W + E)
+
+        # Mensaje de Notificacion de accion
+        # self.message["text"] = f"{self.name_prod} agregado correctamente"
+
     # Creamos funcion para hacer la conexion con la base de datos
     def run_query(self, query, parameters = ()):
         with sqlite3.connect(self.db_name) as conn:
@@ -92,6 +128,98 @@ class Client:
 
         else:
             self.message["text"] = "¡SE REQUIEREN TODOS LOS CAMPOS!"
+
+    # Creamos función para validar si los campos estan vacios
+    def validated_prod(self):
+        return len(self.name_prod.get()) != 0 and len(self.price_prod.get()) != 0
+
+    # Creamos funcion para agregar productos a la base de datos Products
+    def add_new_prod(self):
+        if self.validated_prod():
+            query = "INSERT INTO Products VALUES(NULL, ?, ?)"
+            parameters = (self.name_prod.get(), self.price_prod.get())
+            self.run_query(query, parameters)
+            self.message["text"] = f"{self.name_prod.get()} agregado correctamente"
+            self.get_products()
+            self.wind_add_products.destroy()
+
+        else:
+            self.message["text"] = "¡SE REQUIEREN TODOS LOS CAMPOS!"
+
+    # Creamos función para mostrar los productos de la Base de datos en la interfaz principal
+    def get_products(self):
+
+        # Limpiando datos de la tabla
+        record = self.tab.get_children()
+        for elements in record:
+            self.tab.delete(elements)
+        # Consultando datos de la tabla Productos
+        query = "SELECT * FROM Products ORDER BY Product DESC"
+        db_row = self.run_query(query)
+        # Rellenando datos en la tabla
+        for row in db_row:
+            self.tab.insert("", 0, text = row[1], values = row[2])
+    
+    # Eliminar productos de la tabla Products
+    def delete_products(self):
+        self.message["text"] = ""
+        try:
+            self.tab.item(self.tab.selection())["text"][0]
+        except IndexError as e:
+            self.message["text"] = "Selecione un producto"
+            return
+        self.message["text"] = ""
+        name = self.tab.item(self.tab.selection())["text"]
+        query = "DELETE FROM Products WHERE Product = ?"
+        self.run_query(query, (name, ))
+        self.message["text"] = f"{name} a sido eliminado"
+        self.get_products()
+
+    # Editar productos de la tabla Product
+    def edit_product(self):
+        self.message["text"] = ""
+        try:
+            self.tab.item(self.tab.selection())["text"][0]
+        except IndexError as e:
+            self.message["text"] = "Selecione un producto"
+            return
+        old_name = self.tab.item(self.tab.selection())["text"]
+        old_price = self.tab.item(self.tab.selection())["values"][0]
+        # Creamos una nueva ventana para editar
+        self.edit_wind = Toplevel()
+        self.edit_wind.title("Editar Producto")
+
+        # Nombre actual
+        Label(self.edit_wind, text = "Nombre actual : ").grid(row = 0, column = 1)
+        Entry(self.edit_wind, textvariable = StringVar(self.edit_wind, value = old_name), state = "readonly").grid(row = 0, column = 2)
+
+        # Nuevo nombre
+        Label(self.edit_wind, text = "Nuevo nombre : ", fg = "blue").grid(row = 1, column = 1)
+        new_name = Entry(self.edit_wind)
+        new_name.grid(row = 1, column = 2)
+
+        # Precio actual
+        Label(self.edit_wind, text = "Precio actual : ").grid(row = 2, column = 1)
+        Entry(self.edit_wind, textvariable = StringVar(self.edit_wind, value = old_price), state = "readonly").grid(row = 2, column = 2)
+
+        # Nuevo Precio
+        Label(self.edit_wind, text = "Nuevo precio : ", fg = "blue").grid(row = 3, column = 1)
+        new_price = Entry(self.edit_wind)
+        new_price.grid(row = 3, column = 2)
+
+        # Boton de actualizar
+        Button(self.edit_wind, text = "ACTUALIZAR", command = lambda: self.save_update_prod(new_name.get(), old_name, new_price.get(), old_price)).grid(row = 4, column = 2, sticky = W)
+
+    # Creamos funcion para actualizar los cambios en la ventana de editar
+    def save_update_prod(self, new_name, old_name, new_price, old_price):
+        query = "UPDATE Products SET Product = ?, Price = ? WHERE Product = ? AND Price = ?"
+        parameters = (new_name, new_price, old_name, old_price)
+        self.run_query(query, parameters)
+        self.edit_wind.destroy()
+        self.message["text"] = f"{old_name} se actualizo con éxito"
+        self.get_products()
+
+
             
     # Creamos funcion de buscar cliente
     def search_client(self):
@@ -128,5 +256,5 @@ class Client:
 if __name__ == '__main__':
     window = Tk()
     aplication = Client(window)
-    window.geometry("400x500")
+    window.geometry("400x550")
     window.mainloop()
