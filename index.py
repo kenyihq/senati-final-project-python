@@ -31,7 +31,7 @@ class Client:
         self.dni.focus()
 
         # Creamos boton de buscar
-        self.search = Button(self.frame, text = "Buscar", command = self.search_client)
+        self.search = Button(self.frame, text = "Buscar DNI", command = self.search_client)
         self.search.grid(row = 1, column = 2)
         self.message_search = Label(self.frame, text = "", fg = "red")
         self.message_search.grid(row = 1, column = 3)
@@ -56,7 +56,7 @@ class Client:
         self.phone = Entry(self.frame)
         self.phone.grid(row = 4, column = 1, pady = 10)
 
-        # Creamos boton de agregar datos
+        # Creamos boton de guardar datos
         self.add_dates = Button(self.frame, text = "GUARDAR DATOS", command = self.save_dates)
         self.add_dates.grid(row = 6, column = 1, pady = 20)
 
@@ -80,6 +80,19 @@ class Client:
         ttk.Button(text = "AGREGAR PRODUCTOS", command = self.add_products).grid(row = 8, column = 0, columnspan = 2, sticky = W +E)
 
         self.get_products()
+
+        # Creamos otro frame para mostrar el producto adquirido
+        self.frame2 = LabelFrame(self.wind, text = "Resumen de Orden", font = "Arial")
+        self.frame2.grid(row = 0, column = 2)
+
+        Label(self.frame2, text = "Este es otro Frame").grid(row = 0, column = 0)
+        self.tab_resume = ttk.Treeview(self.frame2, height = 9, columns = 2)
+        self.tab_resume.grid(row = 1, column =0, columnspan = 2)
+        self.tab_resume.heading("#0", text = "Producto", anchor = CENTER)
+        self.tab_resume.heading("#1", text = "Precio Unitario", anchor = CENTER)
+
+        Label(self.frame2, text = "TOTAL").grid(row = 2, column = 0, sticky = W + E)
+        Entry(self.frame2, text = "").grid(row = 2, column = 1, sticky = W + E)
     
     # Creamos funcion para agregar nuevos productos
     def add_products(self):
@@ -231,9 +244,9 @@ class Client:
             query = "SELECT * FROM Client WHERE DNI = ?"
             parameters = (self.dni.get())
             self.run_query(query, (parameters, ))
-            dates_consoles = self.run_query(query, (parameters, ))
-            for self.i in dates_consoles:
-                print(self.i)
+            database_data = self.run_query(query, (parameters, ))
+            for self.search_dni in database_data:
+                print(self.search_dni)
                 self.message_search["text"] = f"{self.dni.get()} encontrado"
                 self.delete_dates()
                 self.full_dates()
@@ -248,11 +261,11 @@ class Client:
 
     # Funcion para rellenar los campos si el cliente esta en la base de datos
     def full_dates(self):
-        self.last_name.insert(0, f"{self.i[2]}")
-        self.name.insert(0, f"{self.i[3]}")
-        self.addres.insert(0, f"{self.i[4]}")
-        self.city.insert(0, f"{self.i[5]}")
-        self.phone.insert(0, f"{self.i[6]}")
+        self.last_name.insert(0, f"{self.search_dni[2]}")
+        self.name.insert(0, f"{self.search_dni[3]}")
+        self.addres.insert(0, f"{self.search_dni[4]}")
+        self.city.insert(0, f"{self.search_dni[5]}")
+        self.phone.insert(0, f"{self.search_dni[6]}")
 
     # Creamos función para limpiar los campos al realizar una busqueda
     def delete_dates(self):
@@ -289,5 +302,5 @@ class Client:
 if __name__ == '__main__':
     window = Tk()
     aplication = Client(window)
-    window.geometry("400x550")
+    window.geometry("820x550")
     window.mainloop()
