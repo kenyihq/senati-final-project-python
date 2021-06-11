@@ -1,6 +1,7 @@
 # Importamos la libreria Tkinter para iniciar la interfaz gráfica
 from tkinter import ttk
 from tkinter import *
+from tkinter import messagebox
 
 # Usaremos la base de datos SQLite3, para guardar los datos de los clientes
 # Importamos
@@ -21,13 +22,14 @@ class Client:
         # self.wind.iconbitmap("D:\\Programacion\\Python\\TKinter\\SenatiProject\\Trabajo-Final-Python\\tornillofelizlogo.ico")
 
         # Creamos el titulo
-        self.frame = LabelFrame(self.wind, text = "Ferretería El Tornillo Feliz", font = "Arial")
-        self.frame.grid(row = 0, column = 0, columnspan = 2)
+        self.frame = LabelFrame(self.wind)
+        self.frame.grid(row = 0, column = 0)
+        Label(self.frame, text = "DATOS DEL CLIENTE", font = "Arial").grid(row = 0, column = 0, columnspan = 4)
 
         # Ingresar datos
         Label(self.frame, text = "DNI :").grid(row = 1, column = 0)
         self.dni = Entry(self.frame)
-        self.dni.grid(row = 1, column = 1, pady = 10)
+        self.dni.grid(row = 1, column = 1, pady = 10, padx = 10)
         self.dni.focus()
 
         # Creamos boton de buscar
@@ -56,43 +58,65 @@ class Client:
         self.phone = Entry(self.frame)
         self.phone.grid(row = 4, column = 1, pady = 10)
 
+        # Creamos boton para actualizar datos
+        self.update_client = Button(self.frame, text = "ACTUALIZAR DATOS")
+        self.update_client.grid(row = 6, column = 0, columnspan = 2, sticky = W + E)
+
         # Creamos boton de guardar datos
         self.add_dates = Button(self.frame, text = "GUARDAR DATOS", command = self.save_dates)
-        self.add_dates.grid(row = 6, column = 1, pady = 20)
-
-        # Creamos boton de imprimir cliente
-        self.print_dates = Button(self.frame, text = "IMPRIMIR", command = self.println)
-        self.print_dates.grid(row = 6, column = 2, pady = 20)
+        self.add_dates.grid(row = 6, column = 2, columnspan = 2, sticky = W + E)
+        
+        # Creamos boton de agregar a compra
+        self.add_purchase = Button(self.frame, text = "AGREGAR PARA COMPRAR")
+        self.add_purchase.grid(row = 7, column = 0, columnspan = 4, sticky = W + E)
 
         # Cramos mensaje de accion
-        self.message = Label(self.frame, text="", fg = "red")
-        self.message.grid(row = 5, column = 1, columnspan = 2, sticky = W + E)
+        self.message = Label(self.frame, text="", fg = "red", font = "Arial", pady = 11)
+        self.message.grid(row = 5, column = 0, columnspan = 4, sticky = W + E)
 
         # Creamos la tabla de los productos de la tienda
-        self.tab = ttk.Treeview(height = 10, columns = 2)
-        self.tab.grid(row = 6, column = 0, columnspan = 2)
+
+        frame_products = LabelFrame(self.wind)
+        frame_products.grid(row = 1, column = 0)
+
+        Label(frame_products, text = "PRODUCTOS", font = "Arial").grid(row = 0, column = 0, columnspan = 2)
+        self.tab = ttk.Treeview(frame_products, height = 10, columns = 2)
+        self.tab.grid(row = 1, column = 0, columnspan = 2)
         self.tab.heading("#0", text = "Producto", anchor = CENTER)
         self.tab.heading("#1", text = "Precio", anchor = CENTER)
 
-        ttk.Button(text = "ELIMINAR", command = self.delete_products).grid(row = 7, column = 0, sticky = W + E)
-        ttk.Button(text = "EDITAR", command = self.edit_product).grid(row = 7, column = 1, sticky = W + E)
-
-        ttk.Button(text = "AGREGAR PRODUCTOS", command = self.add_products).grid(row = 8, column = 0, columnspan = 2, sticky = W +E)
+        ttk.Button(frame_products, text = "ELIMINAR", command = self.delete_products).grid(row = 2, column = 0, sticky = W + E)
+        ttk.Button(frame_products, text = "EDITAR", command = self.edit_product).grid(row = 2, column = 1, sticky = W + E)
+        ttk.Button(frame_products, text = "AGREGAR PRODUCTOS", command = self.add_products).grid(row = 3, column = 0, columnspan = 2, sticky = W +E)
 
         self.get_products()
 
         # Creamos otro frame para mostrar el producto adquirido
-        self.frame2 = LabelFrame(self.wind, text = "Resumen de Orden", font = "Arial")
-        self.frame2.grid(row = 0, column = 2)
+        frame_resume = LabelFrame(self.wind)
+        frame_resume.grid(row = 0, column = 2)
+        Label(frame_resume, text = "RESUSMEN DE COMPRA", font = "Arial").grid(row = 0, column = 0, columnspan = 2)
 
-        Label(self.frame2, text = "Este es otro Frame").grid(row = 0, column = 0)
-        self.tab_resume = ttk.Treeview(self.frame2, height = 9, columns = 2)
+        # Label(self.frame2, text = "Este es otro Frame").grid(row = 0, column = 0)
+        self.tab_resume = ttk.Treeview(frame_resume, height = 9, columns = 2)
         self.tab_resume.grid(row = 1, column =0, columnspan = 2)
         self.tab_resume.heading("#0", text = "Producto", anchor = CENTER)
         self.tab_resume.heading("#1", text = "Precio Unitario", anchor = CENTER)
 
-        Label(self.frame2, text = "TOTAL").grid(row = 2, column = 0, sticky = W + E)
-        Entry(self.frame2, text = "").grid(row = 2, column = 1, sticky = W + E)
+        Label(frame_resume, text = "TOTAL").grid(row = 2, column = 0, sticky = W + E)
+        self.total_price = Entry(frame_resume, text = "", state = "readonly")
+        self.total_price.grid(row = 2, column = 1, sticky = W + E)
+        ttk.Button(frame_resume, text = "ELIMINAR PRODUCTO").grid(row = 3, column = 0, sticky = W + E)
+        ttk.Button(frame_resume, text = "LIMPIAR TODO").grid(row = 3, column = 1, sticky = W + E)
+
+        # Creamos otr frame para agregar botones
+
+        frame3 = LabelFrame(self.wind)
+        Label(frame3, text = "FINALIZAR PEDIDO", font = "Arial").grid(row = 0, column = 0, columnspan = 2)
+        frame3.grid(row = 1, column = 2, rowspan = 9)
+
+        # Creamos boton de imprimir cliente
+        self.print_dates = Button(frame3, text = "IMPRIMIR", font = "Arial", bg = "red", fg = "white", command = self.println)
+        self.print_dates.grid(row = 1, column = 0, sticky = W + E, pady = 122, padx = 160)
     
     # Creamos funcion para agregar nuevos productos
     def add_products(self):
@@ -130,7 +154,7 @@ class Client:
 
     # Creamos funcion para validar si existen datos en la tabla
     def validated(self):
-        return len(self.dni.get()) != 0 and len(self.dni.get()) != 0 and len(self.dni.get()) != 0 and len(self.dni.get()) != 0 and len(self.dni.get()) != 0 and len(self.dni.get()) != 0
+        return len(self.dni.get()) != 0 and len(self.last_name.get()) != 0 and len(self.name.get()) != 0 and len(self.addres.get()) != 0 and len(self.city.get()) != 0 and len(self.phone.get()) != 0
 
     # Creamos funcion para agregar datos a la base de datos Client
     def add_client(self):
@@ -290,6 +314,7 @@ class Client:
         print(f"Dirección : {self.addres.get()}")
         print(f"Ciudad : {self.city.get()}")
         print(f"Teléfono : {self.phone.get()}")
+        self.show_message()
 
     # Creamos función para imprimir los datos en un TXT
     def print_txt(self):
@@ -297,10 +322,14 @@ class Client:
         file = open("nuevo-cliente.txt", "w")
         file.write(print_display)
         file.close()
+
+    # Creamos un aviso de que se imprimió con éxito
+    def show_message(self):
+        messagebox.showinfo("AVISO", message = "Se imprimió con éxito")
         
 # Aqui empieza a ejecutarse el código
 if __name__ == '__main__':
     window = Tk()
     aplication = Client(window)
-    window.geometry("820x550")
+    window.geometry("815x590")
     window.mainloop()

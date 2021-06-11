@@ -1,7 +1,7 @@
 NUEVO CLIENTE
-DNI : 24682468
-Apellidos : Meza
-Nombres : Popis
-Dirección : Fuerad de la Vecindad
+DNI : 91059482
+Apellidos : Gomez
+Nombres : Godinez
+Dirección : Fuera de la Vecindad
 Ciudad : Mexico
-Teléfono : 54864121
+Teléfono : 789457854
