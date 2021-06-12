@@ -1,7 +1,7 @@
 NUEVO CLIENTE
-DNI : 91059482
-Apellidos : Gomez
-Nombres : Godinez
-Dirección : Fuera de la Vecindad
+DNI : 12345678
+Apellidos : Barriga Pesado
+Nombres : Zenon
+Dirección : Mansion Barriga
 Ciudad : Mexico
-Teléfono : 789457854
+Teléfono : 594824512

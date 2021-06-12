@@ -58,17 +58,17 @@ class Client:
         self.phone = Entry(self.frame)
         self.phone.grid(row = 4, column = 1, pady = 10)
 
+        # Creamos boton para limpiar todos lod datos
+        Button(self.frame, text = "Limpiar datos", command = self.delete_button).grid(row = 4, column = 3, sticky = W + E)
+
         # Creamos boton para actualizar datos
-        self.update_client = Button(self.frame, text = "ACTUALIZAR DATOS")
-        self.update_client.grid(row = 6, column = 0, columnspan = 2, sticky = W + E)
+        Button(self.frame, text = "VER CLIENTES", command = self.view_clients).grid(row = 6, column = 0, columnspan = 2, sticky = W + E)
 
         # Creamos boton de guardar datos
-        self.add_dates = Button(self.frame, text = "GUARDAR DATOS", command = self.save_dates)
-        self.add_dates.grid(row = 6, column = 2, columnspan = 2, sticky = W + E)
+        Button(self.frame, text = "GUARDAR DATOS", command = self.save_dates).grid(row = 6, column = 2, columnspan = 2, sticky = W + E)
         
         # Creamos boton de agregar a compra
-        self.add_purchase = Button(self.frame, text = "AGREGAR PARA COMPRAR")
-        self.add_purchase.grid(row = 7, column = 0, columnspan = 4, sticky = W + E)
+        Button(self.frame, text = "AGREGAR PARA COMPRAR").grid(row = 7, column = 0, columnspan = 4, sticky = W + E)
 
         # Cramos mensaje de accion
         self.message = Label(self.frame, text="", fg = "red", font = "Arial", pady = 11)
@@ -115,9 +115,43 @@ class Client:
         frame3.grid(row = 1, column = 2, rowspan = 9)
 
         # Creamos boton de imprimir cliente
-        self.print_dates = Button(frame3, text = "IMPRIMIR", font = "Arial", bg = "red", fg = "white", command = self.println)
-        self.print_dates.grid(row = 1, column = 0, sticky = W + E, pady = 122, padx = 160)
+        self.print_dates = Button(frame3, text = "IMPRIMIR ORDEN", font = "Arial", bg = "red", fg = "white", command = self.println)
+        self.print_dates.grid(row = 1, column = 0, sticky = W + E, pady = 122, padx = 130)
     
+    # Creamos función para mostrar los clientes resgistrdos en la base de datos
+    def view_clients(self):
+        client_window = Toplevel()
+        client_window.title("CLIENTES")
+
+        # frame = LabelFrame(client_window)
+        # frame.grid(row = 0, column = 0)
+        Label(client_window, text = "BASE DE DATOS DE CLIENTES REGISTRADOS", font = "Arial").grid(row = 0, column = 0)
+        self.tab_client = ttk.Treeview(client_window, columns = (1,2,3,4,5,), height = 20)
+        self.tab_client.grid(row = 1, column = 0)
+        self.tab_client.heading("#0", text = "DNI", anchor = CENTER)
+        self.tab_client.heading("#1", text = "Apellidos", anchor = CENTER)
+        self.tab_client.heading("#2", text = "Nombres", anchor = CENTER)
+        self.tab_client.heading("#3", text = "Dirección", anchor = CENTER)
+        self.tab_client.heading("#4", text = "Ciudad", anchor = CENTER)
+        self.tab_client.heading("#5", text = "Teléfono", anchor = CENTER)
+
+        self.get_clients()
+
+    # Creamos funcion para traer los datos de la base de datos a la tabla gráfica
+    def get_clients(self):
+        
+        # Limpiando datos de la tabla
+        record = self.tab_client.get_children()
+        for clients in record:
+            self.tab.delete(clients)
+        # Consultando datos de la tabla Productos
+        query = "SELECT * FROM Client ORDER BY LastName ASC"
+        db_row = self.run_query(query)
+        # Rellenando datos en la tabla
+        for client in db_row:
+            print(client)
+            self.tab_client.insert("", END, text = client[1], values = (client[2], client[3], client[4], client[5], client[6]))
+
     # Creamos funcion para agregar nuevos productos
     def add_products(self):
         self.wind_add_products = Toplevel()
@@ -162,12 +196,11 @@ class Client:
             query = "INSERT INTO Client VALUES(NULL, ?, ?, ?, ?, ?, ?)"
             parameters = (self.dni.get(), self.last_name.get(), self.name.get(), self.addres.get(), self.city.get(), self.phone.get())
             self.run_query(query, parameters)
-            self.print_txt()
-            self.message["text"] = "Guardado correctamente"
+            self.message["text"] = f"{self.name.get()} agregado correctamente"
 
         else:
             self.message["text"] = "¡SE REQUIEREN TODOS LOS CAMPOS!"
-
+        
     # Creamos función para validar si los campos estan vacios
     def validated_prod(self):
         return len(self.name_prod.get()) != 0 and len(self.price_prod.get()) != 0
@@ -297,7 +330,21 @@ class Client:
         self.name.delete(0, END)
         self.addres.delete(0, END)
         self.city.delete(0, END)
-        self.phone.delete(0, END)        
+        self.phone.delete(0, END)
+
+    # Creamos funcion para validar los campos y posteriormente limpiarlos si en uno o más cassilas hay datos ingresdos
+    def validated_button_delete(self):
+        return len(self.dni.get()) != 0 or len(self.last_name.get()) != 0 or len(self.name.get()) != 0 or len(self.addres.get()) != 0 or len(self.city.get()) != 0 or len(self.phone.get()) != 0
+
+    # Creamos funcion para eliminar los datos al presionar el el boton de limpiar datos
+    def delete_button(self):
+        if self.validated_button_delete():
+            self.dni.delete(0, END)
+            self.delete_dates()
+            self.message_search["text"] = ""
+            self.message["text"] = "SE LIMPIÓ CORRECTAMENTE"
+        else:
+            self.message["text"] = "NADA QUE LIMPIAR"
 
     # Creamos funcion para guardar los datos 
     def save_dates(self):
@@ -306,16 +353,19 @@ class Client:
         self.delete_dates()        
 
     # Creamos función para imprimir en consola    
-    def println(self):
+    def println(self):        
+        if self.validated():
+            self.print_txt()
+            print(f"DNI : {self.dni.get()}")
+            print(f"Apellidos : {self.last_name.get()}")
+            print(f"Nombres : {self.name.get()}")
+            print(f"Dirección : {self.addres.get()}")
+            print(f"Ciudad : {self.city.get()}")
+            print(f"Teléfono : {self.phone.get()}")
+            messagebox.showinfo("AVISO", message = f"Orden para {self.name.get()} se imprimió correctamente")
+        else:
+            messagebox.showerror("Error",message = "Se nesecitan todos los datos" )
         
-        print(f"DNI : {self.dni.get()}")
-        print(f"Apellidos : {self.last_name.get()}")
-        print(f"Nombres : {self.name.get()}")
-        print(f"Dirección : {self.addres.get()}")
-        print(f"Ciudad : {self.city.get()}")
-        print(f"Teléfono : {self.phone.get()}")
-        self.show_message()
-
     # Creamos función para imprimir los datos en un TXT
     def print_txt(self):
         print_display = f"NUEVO CLIENTE\nDNI : {self.dni.get()}\nApellidos : {self.last_name.get()}\nNombres : {self.name.get()}\nDirección : {self.addres.get()}\nCiudad : {self.city.get()}\nTeléfono : {self.phone.get()}\n"
@@ -323,13 +373,23 @@ class Client:
         file.write(print_display)
         file.close()
 
-    # Creamos un aviso de que se imprimió con éxito
-    def show_message(self):
-        messagebox.showinfo("AVISO", message = "Se imprimió con éxito")
-        
+    # Creamos funcion para agregar productos a la tabla de compra
+    def add_tab_resume(self):
+         # Limpiando datos de la tabla
+        record = self.tab_resume.get_children()
+        for elements in record:
+            self.tab.delete(elements)
+        # Consultando datos de la tabla Productos
+        query = "SELECT * FROM Products ORDER BY Product DESC"
+        db_row = self.run_query(query)
+        # Rellenando datos en la tabla
+        for row in db_row:
+            self.tab.insert("", 0, text = row[1], values = row[2])
+
 # Aqui empieza a ejecutarse el código
 if __name__ == '__main__':
     window = Tk()
     aplication = Client(window)
     window.geometry("815x590")
+    window.resizable(0, 0)
     window.mainloop()
