@@ -1,0 +1,33 @@
+ 
+    EL TORNILLO FELIZ
+
+    RUC : 00000000000
+        Juliaca
+
+Av. Tangamandapio Nro 123
+CEL : 910594824
+-----------------------------    
+BOLETA DE VENTA ELECTRÓNICA
+        BB00-00
+-----------------------------    
+DATOS DEL CLIENTE
+DNI : 21212121
+Apellidos : Bonaparte
+Nombres : Chaparron
+Dirección : En su imaginacion
+Ciudad : Mexico
+Teléfono : 78546321
+-----------------------------    
+AQUI IRA LOS ARTICULOS QUE COMPRÓ
+Item 1  : Precio
+Item 2  : Precio
+Item 3  : Precio
+Item 4  : Precio
+Item 5  : Precio
+Item 6  : Precio
+Item 7  : Precio
+TOTAL   : 000000
+-----------------------------
+FECHA Y HORA DE LA COMPRA
+12/06/2021 10:11:47
+    

@@ -2,6 +2,8 @@
 from tkinter import ttk
 from tkinter import *
 from tkinter import messagebox
+# Importamos la clase Invoice
+from invoice import Invoice
 
 # Usaremos la base de datos SQLite3, para guardar los datos de los clientes
 # Importamos
@@ -12,6 +14,9 @@ import sqlite3
 class Client:
     # Guardamos la ubicacion relativa de la base de datos en una variable
     db_name = "database.db"
+
+    # Llamamos a la clase Invoice para la impresion 
+    invoice = Invoice()
 
     # Empezamos a construir
     def __init__(self, window):
@@ -65,7 +70,7 @@ class Client:
         Button(self.frame, text = "VER CLIENTES", command = self.view_clients).grid(row = 6, column = 0, columnspan = 2, sticky = W + E)
 
         # Creamos boton de guardar datos
-        Button(self.frame, text = "GUARDAR DATOS", command = self.save_dates).grid(row = 6, column = 2, columnspan = 2, sticky = W + E)
+        Button(self.frame, text = "GUARDAR DATOS", command = self.add_client).grid(row = 6, column = 2, columnspan = 2, sticky = W + E)
         
         # Creamos boton de agregar a compra
         Button(self.frame, text = "AGREGAR PARA COMPRAR").grid(row = 7, column = 0, columnspan = 4, sticky = W + E)
@@ -125,7 +130,7 @@ class Client:
 
         # frame = LabelFrame(client_window)
         # frame.grid(row = 0, column = 0)
-        Label(client_window, text = "BASE DE DATOS DE CLIENTES REGISTRADOS", font = "Arial").grid(row = 0, column = 0)
+        Label(client_window, text = "CLIENTES REGISTRADOS", font = "Arial").grid(row = 0, column = 0)
         self.tab_client = ttk.Treeview(client_window, columns = (1,2,3,4,5,), height = 20)
         self.tab_client.grid(row = 1, column = 0)
         self.tab_client.heading("#0", text = "DNI", anchor = CENTER)
@@ -149,7 +154,7 @@ class Client:
         db_row = self.run_query(query)
         # Rellenando datos en la tabla
         for client in db_row:
-            print(client)
+            #print(client)
             self.tab_client.insert("", END, text = client[1], values = (client[2], client[3], client[4], client[5], client[6]))
 
     # Creamos funcion para agregar nuevos productos
@@ -200,7 +205,10 @@ class Client:
 
         else:
             self.message["text"] = "¡SE REQUIEREN TODOS LOS CAMPOS!"
-        
+            return
+        self.dni.delete(0, END)
+        self.delete_dates() 
+            
     # Creamos función para validar si los campos estan vacios
     def validated_prod(self):
         return len(self.name_prod.get()) != 0 and len(self.price_prod.get()) != 0
@@ -346,12 +354,6 @@ class Client:
         else:
             self.message["text"] = "NADA QUE LIMPIAR"
 
-    # Creamos funcion para guardar los datos 
-    def save_dates(self):
-        self.add_client()
-        self.dni.delete(0, END)
-        self.delete_dates()        
-
     # Creamos función para imprimir en consola    
     def println(self):        
         if self.validated():
@@ -368,10 +370,12 @@ class Client:
         
     # Creamos función para imprimir los datos en un TXT
     def print_txt(self):
-        print_display = f"NUEVO CLIENTE\nDNI : {self.dni.get()}\nApellidos : {self.last_name.get()}\nNombres : {self.name.get()}\nDirección : {self.addres.get()}\nCiudad : {self.city.get()}\nTeléfono : {self.phone.get()}\n"
-        file = open("nuevo-cliente.txt", "w")
+        print_display = f"{self.invoice.invoice_txt}DATOS DEL CLIENTE\nDNI : {self.dni.get()}\nApellidos : {self.last_name.get()}\nNombres : {self.name.get()}\nDirección : {self.addres.get()}\nCiudad : {self.city.get()}\nTeléfono : {self.phone.get()}{self.invoice.datetime_txt}"
+        file = open("nueva-venta.txt", "w")
         file.write(print_display)
         file.close()
+        
+        print(print_display)
 
     # Creamos funcion para agregar productos a la tabla de compra
     def add_tab_resume(self):

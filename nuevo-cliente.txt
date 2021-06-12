@@ -1,7 +1,24 @@
+ 
+    EL TORNILLO FELIZ
+
+    RUC : 00000000000
+        Juliaca
+
+Av. Tangamandapio Nro 123
+CEL : 910594824
+
+BOLETA DE VENTA ELECTRÓNICA
+BB00-00
+
+ 
 NUEVO CLIENTE
-DNI : 12345678
-Apellidos : Barriga Pesado
-Nombres : Zenon
-Dirección : Mansion Barriga
+DNI : 45454545
+Apellidos : Colorado
+Nombres : El Chapulin
+Dirección : Fuera de la vecindad
 Ciudad : Mexico
-Teléfono : 594824512
+Teléfono : 789654123
+  
+FECHA Y HORA DE LA COMPRA
+12/06/2021 09:19:44
+    
