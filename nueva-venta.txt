@@ -1,30 +1,34 @@
- 
-    EL TORNILLO FELIZ
+   EL TORNILLO FELIZ
 
     RUC : 00000000000
         Juliaca
 
 Av. Tangamandapio Nro 123
 CEL : 910594824
-------------------------------    
+---------------------------------    
 BOLETA DE VENTA ELECTRÓNICA
-        BB00-00
-Fecha de emision: 12/06/2021
------------------------------
+            BB00-00
+Fecha de emision: 13/06/2021
+--------------------------------
+	DATOS DEL CLIENTE
 
-DATOS DEL CLIENTE
-
-DNI        : 21212121
-NOMBRE     : Chaparron
-APELLIDOS  : Bonaparte
-DIRECCIÓN  : En su imaginacion
+DNI        : 87654321
+NOMBRE     : Chavo
+APELLIDOS  : Del Ocho
+DIRECCIÓN  : La vencidad
 CIUDAD     : Mexico
-TELEFONO   : 78546321
-------------------------------
-DESCRIPCIÓN
-Delivery   : 4.99
-------------------------------
-TOTAL      : S:/101.99
-------------------------------
-12/06/2021 20:57:36
+TELEFONO   : 487511651
+---------------------------------
+	 DESCRIPCIÓN
+
+Chipote Chillon
+			S./ 99.99
+Pastillas de Chiquitolina
+			S./ 850.0
+Delivery
+			S./ 4.99
+---------------------------------
+TOTAL			S./954.98
+---------------------------------
+	13/06/2021 15:06:51
     
