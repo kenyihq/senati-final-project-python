@@ -13,14 +13,22 @@ class Invoice:
 
 Av. Tangamandapio Nro 123
 CEL : 910594824
------------------------------    
+------------------------------    
 BOLETA DE VENTA ELECTRÓNICA
         BB00-00
------------------------------    
+Fecha de emision: {get_date.strftime('%d/%m/%Y')}
+-----------------------------
+
 '''
 
     datetime_txt =f'''
------------------------------    
+------------------------------
+{get_date.strftime('%d/%m/%Y %H:%M:%S')}
+    
+'''
+
+    example = ''' 
+------------------------------  
 AQUI IRA LOS ARTICULOS QUE COMPRÓ
 Item 1  : Precio
 Item 2  : Precio
@@ -30,8 +38,5 @@ Item 5  : Precio
 Item 6  : Precio
 Item 7  : Precio
 TOTAL   : 000000
------------------------------
-FECHA Y HORA DE LA COMPRA
-{get_date.strftime('%d/%m/%Y %H:%M:%S')}
-    
-'''
+------------------------------
+FECHA Y HORA DE LA COMPRA '''

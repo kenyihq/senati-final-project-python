@@ -73,7 +73,7 @@ class Client:
         Button(self.frame, text = "GUARDAR DATOS", command = self.add_client).grid(row = 6, column = 2, columnspan = 2, sticky = W + E)
         
         # Creamos boton de agregar a compra
-        Button(self.frame, text = "AGREGAR PARA COMPRAR").grid(row = 7, column = 0, columnspan = 4, sticky = W + E)
+        Button(self.frame, text = "AGREGAR PARA COMPRAR", command = self.add_tab_products).grid(row = 7, column = 0, columnspan = 4, sticky = W + E)
 
         # Cramos mensaje de accion
         self.message = Label(self.frame, text="", fg = "red", font = "Arial", pady = 11)
@@ -108,10 +108,12 @@ class Client:
         self.tab_resume.heading("#1", text = "Precio Unitario", anchor = CENTER)
 
         Label(frame_resume, text = "TOTAL").grid(row = 2, column = 0, sticky = W + E)
-        self.total_price = Entry(frame_resume, text = "", state = "readonly")
-        self.total_price.grid(row = 2, column = 1, sticky = W + E)
+        self.total_price = Label(frame_resume, text = "", font = "Arial")
+        self.total_price.grid(row = 2, column = 1, sticky = E)
         ttk.Button(frame_resume, text = "ELIMINAR PRODUCTO").grid(row = 3, column = 0, sticky = W + E)
         ttk.Button(frame_resume, text = "LIMPIAR TODO").grid(row = 3, column = 1, sticky = W + E)
+        
+        self.add_tab_resume()
 
         # Creamos otr frame para agregar botones
 
@@ -358,38 +360,94 @@ class Client:
     def println(self):        
         if self.validated():
             self.print_txt()
-            print(f"DNI : {self.dni.get()}")
-            print(f"Apellidos : {self.last_name.get()}")
-            print(f"Nombres : {self.name.get()}")
-            print(f"Dirección : {self.addres.get()}")
-            print(f"Ciudad : {self.city.get()}")
-            print(f"Teléfono : {self.phone.get()}")
+            # print(f"DNI : {self.dni.get()}")
+            # print(f"Apellidos : {self.last_name.get()}")
+            # print(f"Nombres : {self.name.get()}")
+            # print(f"Dirección : {self.addres.get()}")
+            # print(f"Ciudad : {self.city.get()}")
+            # print(f"Teléfono : {self.phone.get()}")
             messagebox.showinfo("AVISO", message = f"Orden para {self.name.get()} se imprimió correctamente")
+            self.delete_button()
+            self.message["text"] = ""
         else:
             messagebox.showerror("Error",message = "Se nesecitan todos los datos" )
         
     # Creamos función para imprimir los datos en un TXT
     def print_txt(self):
-        print_display = f"{self.invoice.invoice_txt}DATOS DEL CLIENTE\nDNI : {self.dni.get()}\nApellidos : {self.last_name.get()}\nNombres : {self.name.get()}\nDirección : {self.addres.get()}\nCiudad : {self.city.get()}\nTeléfono : {self.phone.get()}{self.invoice.datetime_txt}"
         file = open("nueva-venta.txt", "w")
-        file.write(print_display)
-        file.close()
+        file.write(self.invoice.invoice_txt)
+        file.write("DATOS DEL CLIENTE\n")
+        file.write(f"\nDNI        : {self.dni.get()}")
+        file.write(f"\nNOMBRE     : {self.name.get()}")
+        file.write(f"\nAPELLIDOS  : {self.last_name.get()}")
+        file.write(f"\nDIRECCIÓN  : {self.addres.get()}")
+        file.write(f"\nCIUDAD     : {self.city.get()}")
+        file.write(f"\nTELEFONO   : {self.phone.get()}")
+        file.write("\n"+"-"*30)
+        file.write("\nDESCRIPCIÓN")
+        file.write(f"\nDelivery   : {self.delivery}")
+        file.write("\n"+"-"*30)
+        file.write(f"\nTOTAL      : S:/{self.total_price_tab}")
+        file.write(self.invoice.datetime_txt)
+
+        file.close()                
         
-        print(print_display)
+        # print_display = f"{self.invoice.invoice_txt}DATOS DEL CLIENTE\nDNI : {self.dni.get()}\nNombres : {self.name.get()}\nApellidos : {self.last_name.get()}\nDirección : {self.addres.get()}\nCiudad : {self.city.get()}\nTeléfono : {self.phone.get()}\n-----------------------------\nDESCRIPCIÓN\n{self.item_data['text']} : {self.item_price[0]}\n\nTOTAL : {self.total_price_tab} {self.invoice.datetime_txt}"
+        # file = open("nueva-venta.txt", "w")
+        # file.write(print_display)
+        # file.close()
+        
+        # print(print_display)
 
     # Creamos funcion para agregar productos a la tabla de compra
     def add_tab_resume(self):
-         # Limpiando datos de la tabla
-        record = self.tab_resume.get_children()
-        for elements in record:
-            self.tab.delete(elements)
-        # Consultando datos de la tabla Productos
-        query = "SELECT * FROM Products ORDER BY Product DESC"
-        db_row = self.run_query(query)
-        # Rellenando datos en la tabla
-        for row in db_row:
-            self.tab.insert("", 0, text = row[1], values = row[2])
+        self.delivery = 4.99
 
+        self.tab_resume.get_children()
+        prueba = self.tab_resume.insert("", END, text = "Delivery", values = self.delivery)
+        #price = prueba[2]
+        self.item_data = self.tab_resume.item(prueba)
+        # for i in price:
+        #     print(i)
+        self.item_price = self.item_data['values']
+
+        # self.total_price["text"] = self.item_data['values']
+        print(self.item_data['values'])
+        print(self.item_price[0])
+        
+        # Guardaremos listas de los nombres y su prexio en listas, los cuales se almacenaron en estas variables
+        self.item_price_tab_res = []
+        self.item_name = []
+
+    # Creamos funcion para agregar producto a la tabla de resumen
+    def add_tab_products(self):
+        # Validamos en caso de que ocurra un suceso inesperado
+        self.message["text"] = ""
+        try:
+            self.tab.item(self.tab.selection())["text"][0]
+        except IndexError as e:
+            self.message["text"] = "Selecione un producto"
+            return
+        # Guardamos en un varaibles los textos seleccionados
+        self.name_selection = self.tab.item(self.tab.selection())["text"]
+        self.price_selection = self.tab.item(self.tab.selection())["values"][0]
+        # Agregaamos a la tabla cada vez que se ejecute la funcion add_tab_products
+        self.tab_resume.get_children()
+        self.add_name = self.tab_resume.insert("", END, text = self.name_selection, values = self.price_selection)
+        # Mesnaje de agregar productos
+        self.message["text"] = f"{self.name_selection} se agregó"
+        #print(self.price_item)
+
+        self.item_price_tab_res.append(self.price_selection)
+        print(self.item_price_tab_res)
+        self.total_price_items = 0
+        for item in self.item_price_tab_res:
+            self.total_price_items += float(item)
+
+        self.total_price_tab = round(self.total_price_items + self.delivery, 2)
+        print(self.total_price_tab)
+        self.total_price["text"] = f"S./{self.total_price_tab}"
+          
 # Aqui empieza a ejecutarse el código
 if __name__ == '__main__':
     window = Tk()
