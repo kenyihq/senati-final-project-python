@@ -38,5 +38,14 @@ Item 7  : Precio
 TOTAL   : 000000
 ------------------------------
 FECHA Y HORA DE LA COMPRA '''
-    def hello(self):
-        print("Hola qeones")
+    
+    whatsapp = """ 
+📦 Ya procesamos tu pedido, te pedimos que estes atento a nuestro colaborador que en un apróximado de 30 minutos estará en tu domicilio en """
+
+    contact = """
+_Hecho con el ♥ y por la nota por Kenyi Hancco_
+_© Copyright 2021 - Todos los derechos reservados._
+
+_¿Quieres saber más de mí?_
+_Visita mi pagina web ⬇_
+_http://kenyihq.com_"""

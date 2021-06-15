@@ -2,6 +2,8 @@
 from tkinter import ttk
 from tkinter import *
 from tkinter import messagebox
+# Importamos la librería Pywhatkit para enviar mensjaes por Whatsapp
+import pywhatkit
 # Importamos la clase Invoice
 from invoice import Invoice
 
@@ -365,8 +367,9 @@ class Client:
         if self.validated():
             self.print_txt()
             messagebox.showinfo("AVISO", message = f"Orden para {self.name.get()} se imprimió correctamente")
-            self.delete_button()
-            self.delete_resume_tab()
+            self.send_whatasapp() # Para enviar un mesaje de Whatsapp al cliente
+            self.delete_button()   # Esto borra todas las cajas de texto
+            self.delete_resume_tab() # Esto borra la tabla de resumen
             self.message["text"] = ""
         else:
             messagebox.showerror("Error",message = "Se nesecitan todos los datos" )
@@ -450,27 +453,24 @@ class Client:
         # Borra el precio anterior
         self.total_price["text"] = ""
 
+    # Funcion para enviar mensjes por Whatsapp
+    def send_whatasapp(self):
+        
+        name = f"*{self.name.get()} {self.last_name.get()}*"
+        great = f"Hola {name}, gracias por comprar en *El Tornillo Feliz*\n"
+        number = f"+51{self.phone.get()}"
+        address = f"*{self.addres.get()}*\n"
+        gratitude = self.invoice.whatsapp
+        contact = self.invoice.contact
+        message = great + gratitude + address + contact
+        try:
+            pywhatkit.sendwhatmsg_instantly(str(number), str(message), 10, None, True)
+            messagebox.showinfo("Whatsapp", message = f"Se envio un mensaje de Whatsapp al cliente {self.name.get()} satisfactoriamente")
+            print("Enviado a Whatassapp correctamente")
 
-        # Validamos en caso de que ocurra un suceso inesperado
-        # self.message["text"] = ""
-        # try:
-        #     self.tab_resume.item(self.tab_resume.selection())["text"][0]
-        # except IndexError as e:
-        #     self.message["text"] = "Selecione un producto"
-        #     return
-        # self.name_selection_res = self.tab.item(self.tab_resume.selection())["text"]
-        # self.price_selection_res = self.tab.item(self.tab_resume.selection())["values"][0]
-        # self.tab_resume.delete(self.price_selection_res)
-        # self.total_price_tab -= float(self.price_selection)
-        # self.total_price_tab = round(self.total_price_tab, 2)
-        # self.total_price["text"] = f"S./{self.total_price_tab}"
-        # print()
+        except ValueError:
+            print("Ocurrio un error")
 
-        # name = self.tab.item(self.tab.selection())["text"][0]
-        # self.invoice.hello()
-        # self.tab_resume.delete()
-        # self.total_price["text"] = ""
-          
 # Aqui empieza a ejecutarse el código
 if __name__ == '__main__':
     window = Tk()

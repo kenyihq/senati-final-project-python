@@ -8,7 +8,7 @@ CEL : 910594824
 ---------------------------------    
 BOLETA DE VENTA ELECTRÓNICA
             BB00-00
-Fecha de emision: 13/06/2021
+Fecha de emision: 15/06/2021
 --------------------------------
 	DATOS DEL CLIENTE
 
@@ -17,18 +17,38 @@ NOMBRE     : Chavo
 APELLIDOS  : Del Ocho
 DIRECCIÓN  : La vencidad
 CIUDAD     : Mexico
-TELEFONO   : 487511651
+TELEFONO   : 956203634
 ---------------------------------
 	 DESCRIPCIÓN
 
-Chipote Chillon
-			S./ 99.99
-Pastillas de Chiquitolina
-			S./ 850.0
+Cepillo metalico
+			S./ 29.0
+Cierra de mano
+			S./ 15.0
+Cepillo metalico
+			S./ 29.0
+Foco
+			S./ 19.99
+Cepillo metalico
+			S./ 29.0
+Foco
+			S./ 19.99
+Foco
+			S./ 19.99
+Cierra de mano
+			S./ 15.0
+Martillo
+			S./ 29.0
+Brocha
+			S./ 19.0
+Taladro
+			S./ 499.0
+Alicate
+			S./ 59.0
 Delivery
 			S./ 4.99
 ---------------------------------
-TOTAL			S./954.98
+TOTAL			S./787.96
 ---------------------------------
-	13/06/2021 15:06:51
+	15/06/2021 11:04:28
     
